@@ -1,7 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { supabase, REPORTS_BUCKET, ACTIVITY_TYPES } from "@/lib/supabaseClient";
+import {
+  supabase,
+  REPORTS_BUCKET,
+  ACTIVITY_TYPES,
+  TEACHERS,
+} from "@/lib/supabaseClient";
 import { IconPaperclip } from "@/components/Icons";
 
 function today(): string {
@@ -144,13 +149,24 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
 
         <div className="sm:col-span-2">
           <label className={labelCls}>ชื่อครูผู้รับผิดชอบ</label>
-          <input
-            type="text"
+          <select
             value={teacher}
             onChange={(e) => setTeacher(e.target.value)}
-            placeholder="เช่น นางสาวสมหญิง ใจดี"
             className={inputCls}
-          />
+          >
+            <option value="" style={{ backgroundColor: "#111729", color: "#97a0b5" }}>
+              — เลือกครูผู้รับผิดชอบ —
+            </option>
+            {TEACHERS.map((name) => (
+              <option
+                key={name}
+                value={name}
+                style={{ backgroundColor: "#111729", color: "#e9ebf2" }}
+              >
+                {name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="sm:col-span-2">
