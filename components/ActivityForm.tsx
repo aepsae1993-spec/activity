@@ -88,14 +88,14 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
   }
 
   const inputCls =
-    "w-full rounded-md border border-[var(--line)] bg-[#fcfbf8] px-3.5 py-2.5 text-[var(--ink)] outline-none transition placeholder:text-slate-400 focus:border-[var(--gold)] focus:bg-white focus:ring-1 focus:ring-[var(--gold)]";
+    "w-full rounded-md border border-[var(--line)] bg-black/25 px-3.5 py-2.5 text-[var(--text)] outline-none transition placeholder:text-slate-500 focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] [color-scheme:dark]";
   const labelCls =
-    "mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500";
+    "mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted)]";
 
   return (
     <form onSubmit={handleSubmit} className="card rounded-lg p-6 sm:p-8">
       <div className="mb-6 border-b border-[var(--line)] pb-4">
-        <h2 className="text-lg font-semibold text-[var(--ink)]">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           บันทึกกิจกรรมใหม่
         </h2>
         <div className="gold-rule mt-2" />
@@ -161,17 +161,17 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
 
         <div className="sm:col-span-2">
           <label className={labelCls}>แนบไฟล์รายงาน</label>
-          <label className="group flex cursor-pointer items-center gap-3 rounded-md border border-dashed border-[var(--line)] bg-[#fcfbf8] px-4 py-3.5 transition hover:border-[var(--gold)] hover:bg-white">
-            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-[var(--ink)] text-[var(--gold-light)]">
+          <label className="group flex cursor-pointer items-center gap-3 rounded-md border border-dashed border-[var(--line)] bg-black/20 px-4 py-3.5 transition hover:border-[var(--gold)] hover:bg-black/30">
+            <span className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--line-gold)] bg-black/30 text-[var(--gold-light)]">
               <IconPaperclip className="h-4 w-4" />
             </span>
             <span className="text-sm">
               {file ? (
-                <span className="font-medium text-[var(--ink)]">
+                <span className="font-medium text-[var(--text)]">
                   {file.name}
                 </span>
               ) : (
-                <span className="text-slate-500">
+                <span className="text-[var(--muted)]">
                   คลิกเพื่อเลือกไฟล์ (PDF, รูปภาพ, Word ฯลฯ)
                 </span>
               )}
@@ -195,7 +195,7 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
       <button
         type="submit"
         disabled={saving}
-        className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-[var(--ink)] px-7 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1d2f54] disabled:opacity-60"
+        className="btn-gold mt-6 inline-flex items-center justify-center gap-2 rounded-md px-7 py-2.5 text-sm font-bold shadow-[0_8px_24px_-8px_rgba(212,175,55,0.5)] transition hover:scale-[1.02] disabled:opacity-60"
       >
         {saving ? "กำลังบันทึก..." : "บันทึกกิจกรรม"}
       </button>

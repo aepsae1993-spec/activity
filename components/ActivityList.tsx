@@ -46,13 +46,15 @@ export default function ActivityList({
   }
 
   if (loading) {
-    return <p className="py-12 text-center text-slate-400">กำลังโหลดข้อมูล...</p>;
+    return (
+      <p className="py-12 text-center text-[var(--muted)]">กำลังโหลดข้อมูล...</p>
+    );
   }
 
   if (activities.length === 0) {
     return (
       <div className="card rounded-lg py-16 text-center">
-        <p className="text-slate-400">
+        <p className="text-[var(--muted)]">
           ยังไม่มีกิจกรรม — เริ่มบันทึกกิจกรรมแรกได้เลย
         </p>
       </div>
@@ -71,40 +73,40 @@ export default function ActivityList({
             {/* แถบสีด้านซ้าย */}
             <span
               className={`absolute inset-y-0 left-0 w-1 ${
-                isTraining ? "bg-[var(--gold)]" : "bg-[var(--ink)]"
+                isTraining ? "bg-[var(--gold)]" : "bg-[#8aa0c8]"
               }`}
             />
 
             <div className="mb-3 flex items-start justify-between gap-3 pl-2">
-              <h3 className="font-semibold leading-snug text-[var(--ink)]">
+              <h3 className="font-semibold leading-snug text-[var(--text)]">
                 {a.title}
               </h3>
               <span
                 className={`shrink-0 rounded border px-2 py-0.5 text-[11px] font-semibold tracking-wide ${
                   isTraining
-                    ? "border-[var(--gold)]/40 bg-[var(--gold)]/10 text-[var(--gold)]"
-                    : "border-[var(--ink)]/20 bg-[var(--ink)]/5 text-[var(--ink)]"
+                    ? "border-[var(--gold)]/45 bg-[var(--gold)]/12 text-[var(--gold-light)]"
+                    : "border-[#8aa0c8]/40 bg-[#8aa0c8]/12 text-[#aebed9]"
                 }`}
               >
                 {a.activity_type || "กิจกรรม"}
               </span>
             </div>
 
-            <div className="space-y-1.5 pl-2 text-sm text-slate-600">
+            <div className="space-y-1.5 pl-2 text-sm text-[var(--muted)]">
               <p className="flex items-center gap-2">
-                <IconCalendar className="h-4 w-4 text-slate-400" />
+                <IconCalendar className="h-4 w-4 text-[var(--gold)]/70" />
                 {formatDate(a.activity_date)}
               </p>
               {a.teacher_name && (
                 <p className="flex items-center gap-2">
-                  <IconUser className="h-4 w-4 text-slate-400" />
+                  <IconUser className="h-4 w-4 text-[var(--gold)]/70" />
                   {a.teacher_name}
                 </p>
               )}
             </div>
 
             {a.notes && (
-              <p className="mt-3 border-t border-[var(--line)] pl-2 pt-3 text-sm leading-relaxed text-slate-500">
+              <p className="mt-3 border-t border-[var(--line)] pl-2 pt-3 text-sm leading-relaxed text-[var(--muted)]">
                 {a.notes}
               </p>
             )}
@@ -115,7 +117,7 @@ export default function ActivityList({
                   href={a.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex max-w-[75%] items-center gap-2 rounded-md border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--ink)] transition hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                  className="inline-flex max-w-[75%] items-center gap-2 rounded-md border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--text)] transition hover:border-[var(--gold)] hover:text-[var(--gold-light)]"
                 >
                   <IconDoc className="h-4 w-4 shrink-0" />
                   <span className="truncate">
@@ -123,12 +125,12 @@ export default function ActivityList({
                   </span>
                 </a>
               ) : (
-                <span className="text-xs text-slate-400">ไม่มีไฟล์แนบ</span>
+                <span className="text-xs text-[var(--muted)]">ไม่มีไฟล์แนบ</span>
               )}
 
               <button
                 onClick={() => handleDelete(a.id)}
-                className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-[var(--muted)] transition hover:bg-red-500/10 hover:text-red-400"
               >
                 <IconTrash className="h-4 w-4" />
                 ลบ

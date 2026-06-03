@@ -3,20 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --ink: #14213a; /* navy เข้ม */
-  --gold: #b08d2d; /* ทองสุภาพ */
-  --gold-light: #c9a85a;
-  --paper: #f6f4ef; /* ครีมงาช้าง */
-  --line: #e7e3d8;
+  --bg: #090d18; /* น้ำเงินดำเข้ม */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-solid: #111729;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-gold: rgba(212, 175, 55, 0.28);
+  --text: #e9ebf2; /* ข้อความหลัก */
+  --muted: #97a0b5; /* ข้อความรอง */
+  --gold: #d4af37;
+  --gold-light: #e7c970;
 }
 
 body {
-  color: var(--ink);
-  background-color: var(--paper);
-  /* ลายเส้นบางๆ แนวหรูหรา ไม่ฉูดฉาด */
+  color: var(--text);
+  background-color: var(--bg);
+  /* แสงทอง/น้ำเงินเรืองๆ แบบ dark luxury */
   background-image:
-    radial-gradient(at 100% 0%, rgba(176, 141, 45, 0.06) 0px, transparent 55%),
-    radial-gradient(at 0% 100%, rgba(20, 33, 58, 0.05) 0px, transparent 55%);
+    radial-gradient(at 85% -5%, rgba(212, 175, 55, 0.16) 0px, transparent 45%),
+    radial-gradient(at 0% 0%, rgba(56, 80, 140, 0.22) 0px, transparent 45%),
+    radial-gradient(at 50% 110%, rgba(212, 175, 55, 0.08) 0px, transparent 50%);
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -25,30 +30,43 @@ body {
 .gold-rule {
   height: 2px;
   width: 64px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  background: linear-gradient(90deg, var(--gold), transparent);
 }
 
-/* ข้อความเน้นสีทอง */
 .text-gold {
   color: var(--gold);
 }
 
-/* การ์ดมาตรฐาน */
+/* การ์ดแบบกระจกเข้ม */
 .card {
-  background: #ffffff;
+  background: var(--surface);
   border: 1px solid var(--line);
-  box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04),
-    0 8px 24px -12px rgba(20, 33, 58, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 18px 40px -24px rgba(0, 0, 0, 0.8);
+}
+
+/* ปุ่มทองหรู */
+.btn-gold {
+  background: linear-gradient(135deg, #e7c970 0%, #c39b34 55%, #b8902a 100%);
+  color: #1a1407;
+}
+.btn-gold:hover {
+  background: linear-gradient(135deg, #f0d488 0%, #d0a93c 55%, #c89a2f 100%);
 }
 
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 ::-webkit-scrollbar-thumb {
-  background: #cfc8b6;
+  background: rgba(212, 175, 55, 0.35);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold-light);
+  background: var(--gold);
 }

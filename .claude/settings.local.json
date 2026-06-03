@@ -13,7 +13,10 @@
       "Bash(git add *)",
       "Bash(git -c user.name=aepsae1993-spec -c user.email=aepsae1993@users.noreply.github.com commit -m ' *)",
       "Bash(git remote *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(mkdir -p public)",
+      "Bash(curl -sL \"https://drive.google.com/uc?export=download&id=1uUCsDX-9gbfzNj_e1TTAdyq6KBar6SWf\" -o public/logo_download)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:49272)"
     ]
   }
 }

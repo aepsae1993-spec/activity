@@ -17,21 +17,36 @@ import {
 import type { Activity } from "@/lib/supabaseClient";
 import { IconLayers, IconUser, IconPaperclip } from "@/components/Icons";
 
-// จานสีสุภาพ หรูหรา
+// จานสีหรูบนพื้นเข้ม
 const COLORS = [
-  "#14213a",
-  "#b08d2d",
-  "#3f6f6f",
-  "#6b7a99",
-  "#7c4257",
-  "#9c8645",
-  "#46617f",
-  "#8a6d3b",
+  "#d4af37",
+  "#8aa0c8",
+  "#5fb0a5",
+  "#c98a6b",
+  "#a98ec9",
+  "#cbb26b",
+  "#7f93b8",
+  "#bf7f8f",
 ];
 
 const TYPE_COLORS: Record<string, string> = {
-  กิจกรรม: "#14213a",
-  อบรม: "#b08d2d",
+  กิจกรรม: "#8aa0c8",
+  อบรม: "#d4af37",
+};
+
+const legendStyle = (v: string) => (
+  <span style={{ color: "#c9cee0", fontSize: 13 }}>{v}</span>
+);
+
+const tooltipProps = {
+  contentStyle: {
+    background: "#111729",
+    border: "1px solid rgba(212,175,55,0.3)",
+    borderRadius: 8,
+    color: "#e9ebf2",
+  },
+  itemStyle: { color: "#e9ebf2" },
+  labelStyle: { color: "#97a0b5" },
 };
 
 function StatCard({
@@ -46,14 +61,14 @@ function StatCard({
   return (
     <div className="card rounded-lg p-5">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <span className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
           {label}
         </span>
-        <span className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--line)] text-[var(--gold)]">
+        <span className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--line-gold)] text-[var(--gold)]">
           {icon}
         </span>
       </div>
-      <div className="mt-3 text-3xl font-semibold text-[var(--ink)]">
+      <div className="mt-3 text-3xl font-semibold text-[var(--text)]">
         {value}
       </div>
     </div>
@@ -71,7 +86,7 @@ function ChartCard({
 }) {
   return (
     <div className={`card rounded-lg p-6 ${wide ? "lg:col-span-2" : ""}`}>
-      <h3 className="font-semibold text-[var(--ink)]">{title}</h3>
+      <h3 className="font-semibold text-[var(--text)]">{title}</h3>
       <div className="gold-rule mb-4 mt-2" />
       {children}
     </div>
@@ -139,7 +154,7 @@ export default function Reports({ activities }: { activities: Activity[] }) {
 
       {activities.length === 0 ? (
         <div className="card rounded-lg py-16 text-center">
-          <p className="text-slate-400">ยังไม่มีข้อมูลสำหรับสร้างรายงาน</p>
+          <p className="text-[var(--muted)]">ยังไม่มีข้อมูลสำหรับสร้างรายงาน</p>
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
@@ -155,7 +170,7 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                   innerRadius={58}
                   outerRadius={96}
                   paddingAngle={2}
-                  stroke="#fff"
+                  stroke="#0b1020"
                   strokeWidth={2}
                 >
                   {stats.typeData.map((entry, i) => (
@@ -165,8 +180,8 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                     />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v) => [`${v} รายการ`, ""]} />
-                <Legend />
+                <Tooltip {...tooltipProps} formatter={(v) => [`${v} รายการ`, ""]} />
+                <Legend formatter={legendStyle} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -183,15 +198,15 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                   innerRadius={58}
                   outerRadius={96}
                   paddingAngle={2}
-                  stroke="#fff"
+                  stroke="#0b1020"
                   strokeWidth={2}
                 >
                   {stats.teacherData.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v) => [`${v} กิจกรรม`, ""]} />
-                <Legend />
+                <Tooltip {...tooltipProps} formatter={(v) => [`${v} กิจกรรม`, ""]} />
+                <Legend formatter={legendStyle} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -199,17 +214,27 @@ export default function Reports({ activities }: { activities: Activity[] }) {
           <ChartCard title="จำนวนกิจกรรมรายวัน (14 วันล่าสุด)" wide>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={stats.dateData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#eceadf" />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 12, fill: "#64748b" }}
+                <defs>
+                  <linearGradient id="goldBar" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#e7c970" />
+                    <stop offset="100%" stopColor="#b8902a" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.08)"
                 />
+                <XAxis dataKey="date" tick={{ fontSize: 12, fill: "#97a0b5" }} />
                 <YAxis
                   allowDecimals={false}
-                  tick={{ fontSize: 12, fill: "#64748b" }}
+                  tick={{ fontSize: 12, fill: "#97a0b5" }}
                 />
-                <Tooltip formatter={(v) => [`${v} กิจกรรม`, ""]} />
-                <Bar dataKey="count" fill="#14213a" radius={[3, 3, 0, 0]} />
+                <Tooltip
+                  {...tooltipProps}
+                  cursor={{ fill: "rgba(212,175,55,0.08)" }}
+                  formatter={(v) => [`${v} กิจกรรม`, ""]}
+                />
+                <Bar dataKey="count" fill="url(#goldBar)" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>

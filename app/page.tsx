@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { supabase, type Activity } from "@/lib/supabaseClient";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityList from "@/components/ActivityList";
@@ -40,16 +41,26 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* แถบหัวเรื่องทางการ */}
-      <header className="border-b border-[var(--line)] bg-white/70 backdrop-blur">
+      <header className="border-b border-[var(--line-gold)] bg-black/20 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center gap-4 px-6 py-5">
-          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-[var(--gold)]/40 bg-[var(--ink)] text-[var(--gold-light)]">
-            <IconChart className="h-6 w-6" />
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full ring-1 ring-[var(--gold)]/50 sm:h-[72px] sm:w-[72px]">
+            <Image
+              src="/logo.png"
+              alt="ตราโรงเรียน"
+              width={72}
+              height={72}
+              priority
+              className="h-full w-full object-contain drop-shadow-[0_2px_8px_rgba(212,175,55,0.35)]"
+            />
           </div>
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-[var(--ink)] sm:text-2xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--gold)]">
+              โรงเรียนวัดบางขุด (อุ่นพิทยาคาร)
+            </p>
+            <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-[var(--text)] sm:text-2xl">
               ระบบรายงานกิจกรรม
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-[var(--muted)]">
               ระบบบันทึกและรายงานกิจกรรม / การอบรม
             </p>
           </div>
@@ -74,7 +85,7 @@ export default function Home() {
         </div>
 
         {loadError && (
-          <div className="mb-6 rounded-md border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+          <div className="mb-6 rounded-md border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-200">
             โหลดข้อมูลไม่สำเร็จ: {loadError}
             <br />
             ตรวจสอบการตั้งค่า Supabase (env) และการรันสคริปต์ schema.sql
@@ -86,7 +97,7 @@ export default function Home() {
             <ActivityForm onSaved={fetchActivities} />
             <section>
               <div className="mb-4">
-                <h2 className="text-lg font-semibold text-[var(--ink)]">
+                <h2 className="text-lg font-semibold text-[var(--text)]">
                   รายการกิจกรรมล่าสุด
                 </h2>
                 <div className="gold-rule mt-2" />
@@ -102,7 +113,7 @@ export default function Home() {
           <Reports activities={activities} />
         )}
 
-        <footer className="mt-16 border-t border-[var(--line)] pt-6 text-center text-xs text-slate-400">
+        <footer className="mt-16 border-t border-[var(--line)] pt-6 text-center text-xs text-[var(--muted)]">
           พัฒนาด้วย Next.js · Tailwind · Supabase — เผยแพร่บน Vercel
         </footer>
       </main>
@@ -126,8 +137,8 @@ function TabButton({
       onClick={onClick}
       className={`-mb-px flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-medium transition ${
         active
-          ? "border-[var(--gold)] text-[var(--ink)]"
-          : "border-transparent text-slate-400 hover:text-slate-600"
+          ? "border-[var(--gold)] text-[var(--gold-light)]"
+          : "border-transparent text-[var(--muted)] hover:text-[var(--text)]"
       }`}
     >
       {icon}
