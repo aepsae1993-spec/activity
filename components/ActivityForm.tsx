@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { supabase, REPORTS_BUCKET, ACTIVITY_TYPES } from "@/lib/supabaseClient";
+import { IconPaperclip } from "@/components/Icons";
 
 function today(): string {
   return new Date().toISOString().slice(0, 10);
@@ -76,7 +77,6 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
       return;
     }
 
-    // reset
     setTitle("");
     setActivityType(ACTIVITY_TYPES[0]);
     setTeacher("");
@@ -88,19 +88,17 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
   }
 
   const inputCls =
-    "w-full rounded-xl border border-white/60 bg-white/70 px-4 py-2.5 text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-fuchsia-400 focus:bg-white focus:ring-4 focus:ring-fuchsia-200/60";
-  const labelCls = "mb-1.5 block text-sm font-semibold text-indigo-900/80";
+    "w-full rounded-md border border-[var(--line)] bg-[#fcfbf8] px-3.5 py-2.5 text-[var(--ink)] outline-none transition placeholder:text-slate-400 focus:border-[var(--gold)] focus:bg-white focus:ring-1 focus:ring-[var(--gold)]";
+  const labelCls =
+    "mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500";
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="glass rounded-3xl border border-white/60 p-6 shadow-xl shadow-indigo-200/40 sm:p-8"
-    >
-      <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-xl shadow-lg shadow-fuchsia-300/50">
-          ✏️
-        </span>
-        <h2 className="text-xl font-bold text-indigo-950">บันทึกกิจกรรมใหม่</h2>
+    <form onSubmit={handleSubmit} className="card rounded-lg p-6 sm:p-8">
+      <div className="mb-6 border-b border-[var(--line)] pb-4">
+        <h2 className="text-lg font-semibold text-[var(--ink)]">
+          บันทึกกิจกรรมใหม่
+        </h2>
+        <div className="gold-rule mt-2" />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -110,7 +108,7 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="เช่น กิจกรรมวันวิทยาศาสตร์"
+            placeholder="เช่น กิจกรรมวันวิทยาศาสตร์แห่งชาติ"
             className={inputCls}
           />
         </div>
@@ -146,7 +144,7 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
             type="text"
             value={teacher}
             onChange={(e) => setTeacher(e.target.value)}
-            placeholder="เช่น ครูสมชาย ใจดี"
+            placeholder="เช่น นางสาวสมหญิง ใจดี"
             className={inputCls}
           />
         </div>
@@ -163,15 +161,19 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
 
         <div className="sm:col-span-2">
           <label className={labelCls}>แนบไฟล์รายงาน</label>
-          <label className="group flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-indigo-300/70 bg-white/50 px-4 py-4 transition hover:border-fuchsia-400 hover:bg-fuchsia-50/50">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-fuchsia-500 text-lg text-white shadow">
-              📎
+          <label className="group flex cursor-pointer items-center gap-3 rounded-md border border-dashed border-[var(--line)] bg-[#fcfbf8] px-4 py-3.5 transition hover:border-[var(--gold)] hover:bg-white">
+            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-[var(--ink)] text-[var(--gold-light)]">
+              <IconPaperclip className="h-4 w-4" />
             </span>
-            <span className="text-sm text-slate-600">
+            <span className="text-sm">
               {file ? (
-                <span className="font-medium text-fuchsia-700">{file.name}</span>
+                <span className="font-medium text-[var(--ink)]">
+                  {file.name}
+                </span>
               ) : (
-                "คลิกเพื่อเลือกไฟล์ (PDF, รูปภาพ, Word ฯลฯ)"
+                <span className="text-slate-500">
+                  คลิกเพื่อเลือกไฟล์ (PDF, รูปภาพ, Word ฯลฯ)
+                </span>
               )}
             </span>
             <input
@@ -185,7 +187,7 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">
+        <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">
           {error}
         </p>
       )}
@@ -193,9 +195,9 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
       <button
         type="submit"
         disabled={saving}
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg shadow-fuchsia-300/50 transition hover:scale-[1.02] hover:shadow-fuchsia-400/60 active:scale-100 disabled:opacity-60 sm:w-auto"
+        className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-[var(--ink)] px-7 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1d2f54] disabled:opacity-60"
       >
-        {saving ? "กำลังบันทึก..." : "✨ บันทึกกิจกรรม"}
+        {saving ? "กำลังบันทึก..." : "บันทึกกิจกรรม"}
       </button>
     </form>
   );

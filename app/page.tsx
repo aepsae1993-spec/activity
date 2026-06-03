@@ -5,6 +5,7 @@ import { supabase, type Activity } from "@/lib/supabaseClient";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityList from "@/components/ActivityList";
 import Reports from "@/components/Reports";
+import { IconEdit, IconChart } from "@/components/Icons";
 
 type Tab = "record" | "report";
 
@@ -37,77 +38,100 @@ export default function Home() {
   }, [fetchActivities]);
 
   return (
-    <main className="relative mx-auto min-h-screen max-w-5xl px-4 py-10">
-      {/* แสงไล่สีตกแต่งพื้นหลัง */}
-      <div className="pointer-events-none absolute -left-20 top-10 -z-10 h-72 w-72 rounded-full bg-fuchsia-400/30 blur-3xl animate-float" />
-      <div className="pointer-events-none absolute -right-16 top-40 -z-10 h-80 w-80 rounded-full bg-indigo-400/30 blur-3xl animate-float" />
-
-      <header className="mb-10 text-center">
-        <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/60 px-4 py-1.5 text-sm font-semibold text-indigo-700 shadow-sm backdrop-blur">
-          🎒 ระบบจัดการกิจกรรมโรงเรียน
-        </span>
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-          <span className="text-gradient">ระบบรายงานกิจกรรม</span>
-        </h1>
-        <p className="mx-auto mt-3 max-w-xl text-slate-500">
-          บันทึกกิจกรรม แนบไฟล์รายงาน และดูสรุปแบบสวยงาม ทันสมัย
-        </p>
-      </header>
-
-      <div className="mb-8 flex justify-center">
-        <div className="glass inline-flex rounded-2xl border border-white/60 p-1.5 shadow-lg">
-          <button
-            onClick={() => setTab("record")}
-            className={`rounded-xl px-6 py-2.5 text-sm font-semibold transition ${
-              tab === "record"
-                ? "bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white shadow-md"
-                : "text-slate-600 hover:bg-white/60"
-            }`}
-          >
-            ✏️ บันทึก & รายการ
-          </button>
-          <button
-            onClick={() => setTab("report")}
-            className={`rounded-xl px-6 py-2.5 text-sm font-semibold transition ${
-              tab === "report"
-                ? "bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white shadow-md"
-                : "text-slate-600 hover:bg-white/60"
-            }`}
-          >
-            📊 รายงาน & กราฟ
-          </button>
-        </div>
-      </div>
-
-      {loadError && (
-        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50/80 px-5 py-4 text-sm text-amber-700 backdrop-blur">
-          ⚠️ โหลดข้อมูลไม่สำเร็จ: {loadError}
-          <br />
-          ตรวจสอบว่าตั้งค่า Supabase (env) และรันสคริปต์ schema.sql แล้วหรือยัง
-        </div>
-      )}
-
-      {tab === "record" ? (
-        <div className="space-y-10">
-          <ActivityForm onSaved={fetchActivities} />
+    <div className="min-h-screen">
+      {/* แถบหัวเรื่องทางการ */}
+      <header className="border-b border-[var(--line)] bg-white/70 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl items-center gap-4 px-6 py-5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-md border border-[var(--gold)]/40 bg-[var(--ink)] text-[var(--gold-light)]">
+            <IconChart className="h-6 w-6" />
+          </div>
           <div>
-            <h2 className="mb-4 text-xl font-bold text-indigo-950">
-              📚 รายการกิจกรรมล่าสุด
-            </h2>
-            <ActivityList
-              activities={activities}
-              loading={loading}
-              onChanged={fetchActivities}
-            />
+            <h1 className="text-xl font-semibold tracking-tight text-[var(--ink)] sm:text-2xl">
+              ระบบรายงานกิจกรรม
+            </h1>
+            <p className="text-sm text-slate-500">
+              ระบบบันทึกและรายงานกิจกรรม / การอบรม
+            </p>
           </div>
         </div>
-      ) : (
-        <Reports activities={activities} />
-      )}
+      </header>
 
-      <footer className="mt-16 text-center text-xs text-slate-400">
-        สร้างด้วย Next.js + Tailwind + Supabase · Deploy บน Vercel
-      </footer>
-    </main>
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        {/* แท็บ */}
+        <div className="mb-8 flex border-b border-[var(--line)]">
+          <TabButton
+            active={tab === "record"}
+            onClick={() => setTab("record")}
+            icon={<IconEdit className="h-4 w-4" />}
+            label="บันทึก & รายการ"
+          />
+          <TabButton
+            active={tab === "report"}
+            onClick={() => setTab("report")}
+            icon={<IconChart className="h-4 w-4" />}
+            label="รายงาน & สถิติ"
+          />
+        </div>
+
+        {loadError && (
+          <div className="mb-6 rounded-md border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+            โหลดข้อมูลไม่สำเร็จ: {loadError}
+            <br />
+            ตรวจสอบการตั้งค่า Supabase (env) และการรันสคริปต์ schema.sql
+          </div>
+        )}
+
+        {tab === "record" ? (
+          <div className="space-y-10">
+            <ActivityForm onSaved={fetchActivities} />
+            <section>
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-[var(--ink)]">
+                  รายการกิจกรรมล่าสุด
+                </h2>
+                <div className="gold-rule mt-2" />
+              </div>
+              <ActivityList
+                activities={activities}
+                loading={loading}
+                onChanged={fetchActivities}
+              />
+            </section>
+          </div>
+        ) : (
+          <Reports activities={activities} />
+        )}
+
+        <footer className="mt-16 border-t border-[var(--line)] pt-6 text-center text-xs text-slate-400">
+          พัฒนาด้วย Next.js · Tailwind · Supabase — เผยแพร่บน Vercel
+        </footer>
+      </main>
+    </div>
+  );
+}
+
+function TabButton({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`-mb-px flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-medium transition ${
+        active
+          ? "border-[var(--gold)] text-[var(--ink)]"
+          : "border-transparent text-slate-400 hover:text-slate-600"
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }

@@ -15,49 +15,65 @@ import {
   CartesianGrid,
 } from "recharts";
 import type { Activity } from "@/lib/supabaseClient";
+import { IconLayers, IconUser, IconPaperclip } from "@/components/Icons";
 
+// จานสีสุภาพ หรูหรา
 const COLORS = [
-  "#6366f1",
-  "#d946ef",
-  "#f59e0b",
-  "#10b981",
-  "#8b5cf6",
-  "#f43f5e",
-  "#06b6d4",
-  "#ec4899",
+  "#14213a",
+  "#b08d2d",
+  "#3f6f6f",
+  "#6b7a99",
+  "#7c4257",
+  "#9c8645",
+  "#46617f",
+  "#8a6d3b",
 ];
 
-// สีคงที่ตามประเภท: กิจกรรม = เขียว, อบรม = เหลือง
 const TYPE_COLORS: Record<string, string> = {
-  กิจกรรม: "#10b981",
-  อบรม: "#f59e0b",
+  กิจกรรม: "#14213a",
+  อบรม: "#b08d2d",
 };
 
 function StatCard({
   label,
   value,
   icon,
-  gradient,
 }: {
   label: string;
   value: string;
-  icon: string;
-  gradient: string;
+  icon: React.ReactNode;
 }) {
   return (
-    <div className="glass relative overflow-hidden rounded-3xl border border-white/60 p-5 shadow-lg shadow-indigo-200/40">
-      <div
-        className={`absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br ${gradient} opacity-20 blur-xl`}
-      />
-      <div
-        className={`mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-2xl shadow-lg`}
-      >
-        {icon}
+    <div className="card rounded-lg p-5">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {label}
+        </span>
+        <span className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--line)] text-[var(--gold)]">
+          {icon}
+        </span>
       </div>
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="mt-0.5 text-3xl font-extrabold text-indigo-950">
+      <div className="mt-3 text-3xl font-semibold text-[var(--ink)]">
         {value}
       </div>
+    </div>
+  );
+}
+
+function ChartCard({
+  title,
+  children,
+  wide,
+}: {
+  title: string;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
+  return (
+    <div className={`card rounded-lg p-6 ${wide ? "lg:col-span-2" : ""}`}>
+      <h3 className="font-semibold text-[var(--ink)]">{title}</h3>
+      <div className="gold-rule mb-4 mt-2" />
+      {children}
     </div>
   );
 }
@@ -84,13 +100,10 @@ export default function Reports({ activities }: { activities: Activity[] }) {
       byDate.set(a.activity_date, (byDate.get(a.activity_date) ?? 0) + 1);
     });
 
-    // จัดเรียงให้ "กิจกรรม" มาก่อน "อบรม" เสมอ เพื่อให้สีคงที่
     const TYPE_ORDER = ["กิจกรรม", "อบรม"];
     const typeData = Array.from(byType.entries())
       .map(([name, value]) => ({ name, value }))
-      .sort(
-        (a, b) => TYPE_ORDER.indexOf(a.name) - TYPE_ORDER.indexOf(b.name)
-      );
+      .sort((a, b) => TYPE_ORDER.indexOf(a.name) - TYPE_ORDER.indexOf(b.name));
 
     const teacherData = Array.from(byTeacher.entries())
       .map(([name, value]) => ({ name, value }))
@@ -108,36 +121,29 @@ export default function Reports({ activities }: { activities: Activity[] }) {
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard
-          label="จำนวนกิจกรรมทั้งหมด"
+          label="กิจกรรมทั้งหมด"
           value={`${stats.totalCount}`}
-          icon="📋"
-          gradient="from-indigo-500 to-blue-500"
+          icon={<IconLayers className="h-5 w-5" />}
         />
         <StatCard
           label="ครูผู้รับผิดชอบ"
           value={`${stats.teacherData.length}`}
-          icon="👩‍🏫"
-          gradient="from-fuchsia-500 to-pink-500"
+          icon={<IconUser className="h-5 w-5" />}
         />
         <StatCard
-          label="กิจกรรมที่มีไฟล์แนบ"
+          label="รายการที่มีไฟล์แนบ"
           value={`${stats.withFile}`}
-          icon="📎"
-          gradient="from-amber-500 to-orange-500"
+          icon={<IconPaperclip className="h-5 w-5" />}
         />
       </div>
 
       {activities.length === 0 ? (
-        <div className="glass rounded-3xl border border-white/60 py-16 text-center shadow-lg">
-          <div className="mb-3 text-5xl">📊</div>
-          <p className="text-slate-500">ยังไม่มีข้อมูลสำหรับสร้างรายงาน</p>
+        <div className="card rounded-lg py-16 text-center">
+          <p className="text-slate-400">ยังไม่มีข้อมูลสำหรับสร้างรายงาน</p>
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="glass rounded-3xl border border-white/60 p-6 shadow-lg shadow-indigo-200/40">
-            <h3 className="mb-4 font-bold text-indigo-950">
-              สัดส่วนตามประเภท (กิจกรรม / อบรม)
-            </h3>
+          <ChartCard title="สัดส่วนตามประเภท (กิจกรรม / อบรม)">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -146,10 +152,11 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={55}
-                  outerRadius={95}
-                  paddingAngle={3}
-                  label
+                  innerRadius={58}
+                  outerRadius={96}
+                  paddingAngle={2}
+                  stroke="#fff"
+                  strokeWidth={2}
                 >
                   {stats.typeData.map((entry, i) => (
                     <Cell
@@ -162,12 +169,9 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-          </div>
+          </ChartCard>
 
-          <div className="glass rounded-3xl border border-white/60 p-6 shadow-lg shadow-indigo-200/40">
-            <h3 className="mb-4 font-bold text-indigo-950">
-              สัดส่วนกิจกรรมตามครูผู้รับผิดชอบ
-            </h3>
+          <ChartCard title="สัดส่วนตามครูผู้รับผิดชอบ">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -176,10 +180,11 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={55}
-                  outerRadius={95}
-                  paddingAngle={3}
-                  label
+                  innerRadius={58}
+                  outerRadius={96}
+                  paddingAngle={2}
+                  stroke="#fff"
+                  strokeWidth={2}
                 >
                   {stats.teacherData.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -189,32 +194,25 @@ export default function Reports({ activities }: { activities: Activity[] }) {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-          </div>
+          </ChartCard>
 
-          <div className="glass rounded-3xl border border-white/60 p-6 shadow-lg shadow-indigo-200/40 lg:col-span-2">
-            <h3 className="mb-4 font-bold text-indigo-950">
-              จำนวนกิจกรรมรายวัน (14 วันล่าสุด)
-            </h3>
+          <ChartCard title="จำนวนกิจกรรมรายวัน (14 วันล่าสุด)" wide>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={stats.dateData}>
-                <defs>
-                  <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#a855f7" />
-                    <stop offset="100%" stopColor="#6366f1" />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e9d5ff" />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(v) => [`${v} กิจกรรม`, ""]} />
-                <Bar
-                  dataKey="count"
-                  fill="url(#barFill)"
-                  radius={[6, 6, 0, 0]}
+                <CartesianGrid strokeDasharray="3 3" stroke="#eceadf" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 12, fill: "#64748b" }}
                 />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fontSize: 12, fill: "#64748b" }}
+                />
+                <Tooltip formatter={(v) => [`${v} กิจกรรม`, ""]} />
+                <Bar dataKey="count" fill="#14213a" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </ChartCard>
         </div>
       )}
     </div>

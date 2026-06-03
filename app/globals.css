@@ -3,45 +3,52 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #1e1b4b;
+  --ink: #14213a; /* navy เข้ม */
+  --gold: #b08d2d; /* ทองสุภาพ */
+  --gold-light: #c9a85a;
+  --paper: #f6f4ef; /* ครีมงาช้าง */
+  --line: #e7e3d8;
 }
 
 body {
-  color: var(--foreground);
-  background: #f5f3ff;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* ลายเส้นบางๆ แนวหรูหรา ไม่ฉูดฉาด */
   background-image:
-    radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.35) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(244, 114, 182, 0.30) 0px, transparent 50%),
-    radial-gradient(at 80% 100%, rgba(45, 212, 191, 0.28) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(251, 191, 36, 0.25) 0px, transparent 50%);
+    radial-gradient(at 100% 0%, rgba(176, 141, 45, 0.06) 0px, transparent 55%),
+    radial-gradient(at 0% 100%, rgba(20, 33, 58, 0.05) 0px, transparent 55%);
   background-attachment: fixed;
   min-height: 100vh;
 }
 
-/* การ์ดแก้วฝ้า (glass) */
-.glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+/* เส้นคั่นทอง */
+.gold-rule {
+  height: 2px;
+  width: 64px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
-/* ข้อความไล่สี */
-.text-gradient {
-  background: linear-gradient(135deg, #6366f1 0%, #d946ef 50%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* ข้อความเน้นสีทอง */
+.text-gold {
+  color: var(--gold);
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-20px) scale(1.05); }
+/* การ์ดมาตรฐาน */
+.card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04),
+    0 8px 24px -12px rgba(20, 33, 58, 0.12);
 }
-.animate-float { animation: float 8s ease-in-out infinite; }
 
-/* แต่ง scrollbar ให้เข้าธีม */
-::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(#a78bfa, #f0abfc);
+  background: #cfc8b6;
   border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
 }
