@@ -34,7 +34,14 @@ export default function ActivityList({
   onChanged: () => void;
 }) {
   async function handleDelete(id: string) {
-    if (!confirm("ต้องการลบกิจกรรมนี้ใช่หรือไม่?")) return;
+    const required =
+      process.env.NEXT_PUBLIC_DELETE_PASSWORD || "admin1234";
+    const input = prompt("🔒 กรุณาใส่รหัสผ่านเพื่อลบกิจกรรมนี้:");
+    if (input === null) return; // กดยกเลิก
+    if (input !== required) {
+      alert("รหัสผ่านไม่ถูกต้อง");
+      return;
+    }
     const { error } = await supabase.from("activities").delete().eq("id", id);
     if (error) {
       alert("ลบไม่สำเร็จ: " + error.message);

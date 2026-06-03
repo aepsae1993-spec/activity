@@ -74,6 +74,7 @@ git push -u origin main
    |-----|-------|
    | `NEXT_PUBLIC_SUPABASE_URL` | (Project URL จาก Supabase) |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | (anon key จาก Supabase) |
+   | `NEXT_PUBLIC_DELETE_PASSWORD` | รหัสผ่านสำหรับยืนยันการลบกิจกรรม (ไม่ตั้งจะใช้ `admin1234`) |
 4. กด **Deploy** — เสร็จแล้วจะได้ URL ใช้งานจริง
 
 > ทุกครั้งที่ `git push` ขึ้น branch `main` Vercel จะ deploy ใหม่ให้อัตโนมัติ
