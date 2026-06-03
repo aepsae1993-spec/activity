@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(git --version)",
+      "Bash(npx --yes create-next-app@latest . --ts --tailwind --app --no-src-dir --no-eslint --use-npm --import-alias \"@/*\" --yes)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npx --yes kill-port 3000)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:60967)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git -c user.name=aepsae1993-spec -c user.email=aepsae1993@users.noreply.github.com commit -m ' *)"
+    ]
+  }
+}
