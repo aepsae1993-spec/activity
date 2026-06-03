@@ -36,8 +36,16 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
     // แยกเก็บเป็น 2 โฟลเดอร์ตามประเภทงาน: กิจกรรม -> activity/, อบรม -> training/
     if (file) {
       const folder = activityType === "อบรม" ? "training" : "activity";
-      const safeName = file.name.replace(/[^\w.\-ก-๙]+/g, "_");
-      const path = `${folder}/${Date.now()}_${safeName}`;
+      // Supabase Storage key รองรับเฉพาะ ASCII -> ตัดอักขระภาษาไทย/พิเศษออก
+      // (ชื่อไฟล์เดิมภาษาไทยจะถูกเก็บใน file_name เพื่อแสดงผลให้ผู้ใช้)
+      const dot = file.name.lastIndexOf(".");
+      const ext = dot > -1 ? file.name.slice(dot + 1).replace(/[^\w]+/g, "") : "";
+      const base =
+        (dot > -1 ? file.name.slice(0, dot) : file.name)
+          .replace(/[^\w.\-]+/g, "_")
+          .replace(/_+/g, "_")
+          .replace(/^_|_$/g, "") || "report";
+      const path = `${folder}/${Date.now()}_${base}${ext ? "." + ext : ""}`;
       const { error: upErr } = await supabase.storage
         .from(REPORTS_BUCKET)
         .upload(path, file, { upsert: false });
