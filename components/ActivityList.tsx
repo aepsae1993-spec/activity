@@ -65,59 +65,57 @@ export default function ActivityList({
     <div className="grid gap-4 sm:grid-cols-2">
       {activities.map((a) => {
         const isTraining = a.activity_type === "อบรม";
+        const t = isTraining ? TRAINING : ACTIVITY;
         return (
           <article
             key={a.id}
-            className="card group relative overflow-hidden rounded-lg p-5 transition hover:shadow-[0_12px_32px_-12px_rgba(20,33,58,0.22)]"
+            className={`card group relative overflow-hidden rounded-xl p-5 pl-6 transition hover:-translate-y-0.5 ${t.hover}`}
           >
-            {/* แถบสีด้านซ้าย */}
+            {/* แถบสีด้านซ้าย + แสงเรืองมุมบน */}
             <span
-              className={`absolute inset-y-0 left-0 w-1 ${
-                isTraining ? "bg-[var(--gold)]" : "bg-[#8aa0c8]"
-              }`}
+              className={`absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b ${t.bar}`}
+            />
+            <span
+              className={`pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full ${t.glow} blur-2xl`}
             />
 
-            <div className="mb-3 flex items-start justify-between gap-3 pl-2">
-              <h3 className="font-semibold leading-snug text-[var(--text)]">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <h3 className="font-semibold leading-snug text-white">
                 {a.title}
               </h3>
               <span
-                className={`shrink-0 rounded border px-2 py-0.5 text-[11px] font-semibold tracking-wide ${
-                  isTraining
-                    ? "border-[var(--gold)]/45 bg-[var(--gold)]/12 text-[var(--gold-light)]"
-                    : "border-[#8aa0c8]/40 bg-[#8aa0c8]/12 text-[#aebed9]"
-                }`}
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide shadow-sm ${t.badge}`}
               >
                 {a.activity_type || "กิจกรรม"}
               </span>
             </div>
 
-            <div className="space-y-1.5 pl-2 text-sm text-[var(--muted)]">
+            <div className="space-y-1.5 text-sm text-slate-300">
               <p className="flex items-center gap-2">
-                <IconCalendar className="h-4 w-4 text-[var(--gold)]/70" />
+                <IconCalendar className={`h-4 w-4 ${t.icon}`} />
                 {formatDate(a.activity_date)}
               </p>
               {a.teacher_name && (
                 <p className="flex items-center gap-2">
-                  <IconUser className="h-4 w-4 text-[var(--gold)]/70" />
+                  <IconUser className={`h-4 w-4 ${t.icon}`} />
                   {a.teacher_name}
                 </p>
               )}
             </div>
 
             {a.notes && (
-              <p className="mt-3 border-t border-[var(--line)] pl-2 pt-3 text-sm leading-relaxed text-[var(--muted)]">
+              <p className="mt-3 border-t border-white/10 pt-3 text-sm leading-relaxed text-slate-300">
                 {a.notes}
               </p>
             )}
 
-            <div className="mt-4 flex items-center justify-between gap-3 pl-2">
+            <div className="mt-4 flex items-center justify-between gap-3">
               {a.file_url ? (
                 <a
                   href={a.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex max-w-[75%] items-center gap-2 rounded-md border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--text)] transition hover:border-[var(--gold)] hover:text-[var(--gold-light)]"
+                  className={`inline-flex max-w-[75%] items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${t.file}`}
                 >
                   <IconDoc className="h-4 w-4 shrink-0" />
                   <span className="truncate">
@@ -125,12 +123,12 @@ export default function ActivityList({
                   </span>
                 </a>
               ) : (
-                <span className="text-xs text-[var(--muted)]">ไม่มีไฟล์แนบ</span>
+                <span className="text-xs text-slate-500">ไม่มีไฟล์แนบ</span>
               )}
 
               <button
                 onClick={() => handleDelete(a.id)}
-                className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-[var(--muted)] transition hover:bg-red-500/10 hover:text-red-400"
+                className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-red-500/15 hover:text-red-400"
               >
                 <IconTrash className="h-4 w-4" />
                 ลบ
@@ -142,3 +140,22 @@ export default function ActivityList({
     </div>
   );
 }
+
+// ชุดสีตามประเภท — สดใสแต่ยังเข้ากับธีมเข้ม
+const ACTIVITY = {
+  bar: "from-cyan-400 to-blue-500",
+  glow: "bg-cyan-400/15",
+  badge: "bg-cyan-400 text-cyan-950",
+  icon: "text-cyan-300",
+  file: "bg-cyan-400/15 text-cyan-200 hover:bg-cyan-400/25",
+  hover: "hover:shadow-[0_16px_40px_-16px_rgba(34,211,238,0.45)]",
+};
+
+const TRAINING = {
+  bar: "from-amber-300 to-yellow-500",
+  glow: "bg-amber-400/15",
+  badge: "bg-amber-400 text-amber-950",
+  icon: "text-amber-300",
+  file: "bg-amber-400/15 text-amber-200 hover:bg-amber-400/25",
+  hover: "hover:shadow-[0_16px_40px_-16px_rgba(251,191,36,0.45)]",
+};

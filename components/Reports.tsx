@@ -30,8 +30,8 @@ const COLORS = [
 ];
 
 const TYPE_COLORS: Record<string, string> = {
-  กิจกรรม: "#8aa0c8",
-  อบรม: "#d4af37",
+  กิจกรรม: "#22d3ee",
+  อบรม: "#f59e0b",
 };
 
 const legendStyle = (v: string) => (

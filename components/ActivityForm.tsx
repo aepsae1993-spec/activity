@@ -121,7 +121,11 @@ export default function ActivityForm({ onSaved }: { onSaved: () => void }) {
             className={inputCls}
           >
             {ACTIVITY_TYPES.map((t) => (
-              <option key={t} value={t}>
+              <option
+                key={t}
+                value={t}
+                style={{ backgroundColor: "#111729", color: "#e9ebf2" }}
+              >
                 {t}
               </option>
             ))}
