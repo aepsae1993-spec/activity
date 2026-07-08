@@ -119,7 +119,7 @@ function buildReportHtml(
   .sign .box { text-align: center; font-size: 14px; color: #333; flex: 1; }
   .sign .line { margin-bottom: 6px; }
   .sign .role { margin-top: 2px; }
-  .foot { margin-top: 40px; font-size: 12px; color: #888; text-align: right; }
+  .foot { position: fixed; bottom: 8mm; right: 15mm; font-size: 12px; color: #888; text-align: right; }
   @media print { .noprint { display: none !important; } }
   .noprint { text-align:center; margin: 18px 0 4px; }
   .noprint button { font-family:'Sarabun',sans-serif; background:${accent}; color:#fff; border:none; padding:10px 22px; border-radius:6px; font-size:15px; cursor:pointer; }
