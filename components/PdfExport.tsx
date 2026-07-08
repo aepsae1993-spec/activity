@@ -79,10 +79,18 @@ function buildReportHtml(
     .join("");
 
   const emptyRow = `<tr><td colspan="5" class="c empty">— ไม่มีข้อมูลในช่วงที่เลือก —</td></tr>`;
-  const printedDate = new Date().toLocaleDateString("th-TH", {
+  const now = new Date();
+  const printedDate = now.toLocaleDateString("th-TH", {
     day: "numeric",
     month: "long",
     year: "numeric",
+  });
+  const printedDateTime = now.toLocaleString("th-TH", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   return `<!doctype html>
@@ -97,7 +105,9 @@ function buildReportHtml(
   /* margin:0 เพื่อไม่ให้เบราว์เซอร์เติมหัว/ท้ายกระดาษ (วันที่, ชื่อเรื่อง, about:blank, เลขหน้า) */
   @page { size: A4; margin: 0; }
   * { box-sizing: border-box; }
-  body { font-family: 'Sarabun', sans-serif; color: #1a1a1a; margin: 0; padding: 16mm 15mm 18mm; }
+  body { font-family: 'Sarabun', sans-serif; color: #1a1a1a; margin: 0; padding: 16mm 15mm 18mm; position: relative; }
+  .stamp-tl { position: fixed; top: 8mm; left: 15mm; font-size: 12px; color: #888; }
+  .pageno { position: absolute; right: 15mm; font-size: 12px; color: #888; }
   .head { display: flex; align-items: center; gap: 16px; border-bottom: 3px solid ${accent}; padding-bottom: 14px; }
   .head img { width: 78px; height: 78px; object-fit: contain; }
   .head .sch { font-size: 15px; color: #555; letter-spacing: .5px; }
@@ -126,6 +136,7 @@ function buildReportHtml(
 </style>
 </head>
 <body>
+  <div class="stamp-tl">${printedDateTime}</div>
   <div class="head">
     <img src="${LOGO_URL}" alt="ตราโรงเรียน" onerror="this.style.display='none'" />
     <div>
@@ -179,6 +190,19 @@ function buildReportHtml(
 
   <script>
     window.addEventListener('load', function () {
+      // คำนวณจำนวนหน้าจริง แล้วปั๊มเลขหน้า (เช่น 1/1) มุมบนขวาของทุกหน้า
+      try {
+        var mm = 96 / 25.4;               // px ต่อ 1 มิลลิเมตร ที่ 96dpi
+        var pageH = 297 * mm;             // ความสูง A4 เต็มหน้า (margin:0)
+        var total = Math.max(1, Math.ceil(document.body.scrollHeight / pageH));
+        for (var i = 0; i < total; i++) {
+          var el = document.createElement('div');
+          el.className = 'pageno';
+          el.style.top = (i * pageH + 8 * mm) + 'px';
+          el.textContent = (i + 1) + '/' + total;
+          document.body.appendChild(el);
+        }
+      } catch (e) {}
       setTimeout(function () { window.print(); }, 500);
     });
   </script>
