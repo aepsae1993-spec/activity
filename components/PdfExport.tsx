@@ -131,7 +131,7 @@ function buildReportHtml(
   .qr span { font-size: 10px; color: #777; }
   /* ช่องครู: ไม่ตัดคำกลางชื่อ + ฟอนต์เล็กลงเล็กน้อยให้ชื่อยาวพอดี */
   td:nth-child(3) { word-break: keep-all; line-height: 1.35; font-size: 13px; }
-  .sign { margin-top: 54px; display: flex; justify-content: space-between; gap: 24px; }
+  .sign { margin-top: 90px; display: flex; justify-content: space-between; gap: 24px; }
   .sign .box { text-align: center; font-size: 14px; color: #333; flex: 1; }
   .sign .line { margin-bottom: 6px; }
   .sign .role { margin-top: 2px; }
