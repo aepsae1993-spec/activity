@@ -94,9 +94,10 @@ function buildReportHtml(
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  @page { size: A4; margin: 18mm 16mm; }
+  /* margin:0 เพื่อไม่ให้เบราว์เซอร์เติมหัว/ท้ายกระดาษ (วันที่, ชื่อเรื่อง, about:blank, เลขหน้า) */
+  @page { size: A4; margin: 0; }
   * { box-sizing: border-box; }
-  body { font-family: 'Sarabun', sans-serif; color: #1a1a1a; margin: 0; }
+  body { font-family: 'Sarabun', sans-serif; color: #1a1a1a; margin: 0; padding: 16mm 15mm 18mm; }
   .head { display: flex; align-items: center; gap: 16px; border-bottom: 3px solid ${accent}; padding-bottom: 14px; }
   .head img { width: 78px; height: 78px; object-fit: contain; }
   .head .sch { font-size: 15px; color: #555; letter-spacing: .5px; }
@@ -118,7 +119,7 @@ function buildReportHtml(
   .sign .box { text-align: center; font-size: 14px; color: #333; flex: 1; }
   .sign .line { margin-bottom: 6px; }
   .sign .role { margin-top: 2px; }
-  .foot { margin-top: 10px; font-size: 12px; color: #888; text-align: right; }
+  .foot { margin-top: 40px; font-size: 12px; color: #888; text-align: right; }
   @media print { .noprint { display: none !important; } }
   .noprint { text-align:center; margin: 18px 0 4px; }
   .noprint button { font-family:'Sarabun',sans-serif; background:${accent}; color:#fff; border:none; padding:10px 22px; border-radius:6px; font-size:15px; cursor:pointer; }
