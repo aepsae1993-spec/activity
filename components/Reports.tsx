@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import type { Activity } from "@/lib/supabaseClient";
 import { IconLayers, IconUser, IconPaperclip } from "@/components/Icons";
+import PdfExport from "@/components/PdfExport";
 
 // จานสีหรูบนพื้นเข้ม
 const COLORS = [
@@ -134,6 +135,8 @@ export default function Reports({ activities }: { activities: Activity[] }) {
 
   return (
     <div className="space-y-6">
+      <PdfExport activities={activities} />
+
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard
           label="กิจกรรมทั้งหมด"

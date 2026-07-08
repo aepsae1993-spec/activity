@@ -17,7 +17,8 @@
       "Bash(mkdir -p public)",
       "Bash(curl -sL \"https://drive.google.com/uc?export=download&id=1uUCsDX-9gbfzNj_e1TTAdyq6KBar6SWf\" -o public/logo_download)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:49272)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:51025)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:51025)",
+      "Bash(node -e ' *)"
     ]
   }
 }
