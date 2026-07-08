@@ -85,13 +85,19 @@ function buildReportHtml(
     month: "long",
     year: "numeric",
   });
-  const printedDateTime = now.toLocaleString("th-TH", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  // รูปแบบ 8/7/69 20:10 (วัน/เดือน/ปี พ.ศ. 2 หลัก + เวลา 24 ชม.)
+  const printedDateTime =
+    now.toLocaleDateString("th-TH", {
+      day: "numeric",
+      month: "numeric",
+      year: "2-digit",
+    }) +
+    " " +
+    now.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
 
   return `<!doctype html>
 <html lang="th">
