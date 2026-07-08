@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import QRCode from "qrcode";
 import type { Activity } from "@/lib/supabaseClient";
 import { IconDoc } from "@/components/Icons";
 
@@ -47,7 +48,8 @@ function escapeHtml(s: string): string {
 function buildReportHtml(
   type: "กิจกรรม" | "อบรม",
   monthValue: string,
-  rows: Activity[]
+  rows: Activity[],
+  qrMap: Record<string, string>
 ): string {
   const monthLabel =
     monthValue === "all"
@@ -57,16 +59,20 @@ function buildReportHtml(
   const accent = type === "อบรม" ? "#b8902a" : "#1f6f8b";
 
   const bodyRows = rows
-    .map(
-      (a, i) => `
+    .map((a, i) => {
+      const qr = qrMap[a.id];
+      const fileCell = qr
+        ? `<div class="qr"><img src="${qr}" alt="QR" /><span>สแกนเปิดไฟล์</span></div>`
+        : '<span class="dim">-</span>';
+      return `
         <tr>
           <td class="c">${i + 1}</td>
           <td>${escapeHtml(a.title)}</td>
           <td>${escapeHtml(a.teacher_name || "-")}</td>
           <td class="c">${formatThaiDate(a.activity_date)}</td>
-          <td>${a.file_name ? escapeHtml(a.file_name) : "-"}</td>
-        </tr>`
-    )
+          <td class="c">${fileCell}</td>
+        </tr>`;
+    })
     .join("");
 
   const emptyRow = `<tr><td colspan="5" class="c empty">— ไม่มีข้อมูลในช่วงที่เลือก —</td></tr>`;
@@ -99,6 +105,11 @@ function buildReportHtml(
   td.c { text-align: center; white-space: nowrap; }
   tbody tr:nth-child(even) { background: #f6f6f4; }
   .empty { color: #999; padding: 26px; }
+  .dim { color: #aaa; }
+  .qr { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+  .qr img { width: 70px; height: 70px; }
+  .qr span { font-size: 10px; color: #777; }
+  td:nth-child(4) { white-space: normal; }
   .sign { margin-top: 48px; display: flex; justify-content: flex-end; }
   .sign .box { text-align: center; font-size: 14px; color: #333; }
   .sign .line { margin-bottom: 6px; }
@@ -125,11 +136,11 @@ function buildReportHtml(
   <table>
     <thead>
       <tr>
-        <th style="width:52px" class="c">ลำดับ</th>
+        <th style="width:44px" class="c">ลำดับ</th>
         <th>ชื่อ${type}</th>
-        <th style="width:200px">ครูผู้รับผิดชอบ</th>
-        <th style="width:130px" class="c">วันที่จัด</th>
-        <th style="width:190px">ไฟล์รายงาน</th>
+        <th style="width:160px">ครูผู้รับผิดชอบ</th>
+        <th style="width:96px" class="c">วันที่จัด</th>
+        <th style="width:92px" class="c">ไฟล์รายงาน</th>
       </tr>
     </thead>
     <tbody>
@@ -162,8 +173,9 @@ function buildReportHtml(
 
 export default function PdfExport({ activities }: { activities: Activity[] }) {
   const [month, setMonth] = useState<string>("all");
+  const [busy, setBusy] = useState<string | null>(null);
 
-  function handleExport(type: "กิจกรรม" | "อบรม") {
+  async function handleExport(type: "กิจกรรม" | "อบรม") {
     const rows = activities
       .filter((a) => (a.activity_type || "กิจกรรม") === type)
       .filter((a) => {
@@ -173,7 +185,26 @@ export default function PdfExport({ activities }: { activities: Activity[] }) {
       })
       .sort((a, b) => a.activity_date.localeCompare(b.activity_date));
 
-    const html = buildReportHtml(type, month, rows);
+    setBusy(type);
+    // สร้าง QR code (data URL) สำหรับลิงก์ไฟล์รายงานของแต่ละรายการ
+    const qrMap: Record<string, string> = {};
+    await Promise.all(
+      rows
+        .filter((a) => a.file_url)
+        .map(async (a) => {
+          try {
+            qrMap[a.id] = await QRCode.toDataURL(a.file_url as string, {
+              margin: 1,
+              width: 140,
+            });
+          } catch {
+            /* ข้ามถ้าสร้าง QR ไม่สำเร็จ */
+          }
+        })
+    );
+    setBusy(null);
+
+    const html = buildReportHtml(type, month, rows, qrMap);
     const w = window.open("", "_blank");
     if (!w) {
       alert("กรุณาอนุญาต pop-up ของเว็บไซต์นี้ เพื่อเปิดหน้ารายงาน");
@@ -223,17 +254,19 @@ export default function PdfExport({ activities }: { activities: Activity[] }) {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => handleExport("กิจกรรม")}
-            className="inline-flex items-center gap-2 rounded-md bg-cyan-500/90 px-5 py-2.5 text-sm font-semibold text-cyan-950 shadow-sm transition hover:bg-cyan-400"
+            disabled={busy !== null}
+            className="inline-flex items-center gap-2 rounded-md bg-cyan-500/90 px-5 py-2.5 text-sm font-semibold text-cyan-950 shadow-sm transition hover:bg-cyan-400 disabled:opacity-60"
           >
             <IconDoc className="h-4 w-4" />
-            รายงานกิจกรรม
+            {busy === "กิจกรรม" ? "กำลังสร้าง..." : "รายงานกิจกรรม"}
           </button>
           <button
             onClick={() => handleExport("อบรม")}
-            className="btn-gold inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-bold shadow-sm transition hover:scale-[1.02]"
+            disabled={busy !== null}
+            className="btn-gold inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-bold shadow-sm transition hover:scale-[1.02] disabled:opacity-60"
           >
             <IconDoc className="h-4 w-4" />
-            รายงานการอบรม
+            {busy === "อบรม" ? "กำลังสร้าง..." : "รายงานการอบรม"}
           </button>
         </div>
       </div>
