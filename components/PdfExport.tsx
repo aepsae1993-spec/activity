@@ -27,9 +27,10 @@ const THAI_MONTHS = [
 
 function formatThaiDate(d: string): string {
   try {
+    // เดือนแบบย่อ (เช่น 23 มิ.ย. 2569) เพื่อประหยัดความกว้างคอลัมน์
     return new Date(d + "T00:00:00").toLocaleDateString("th-TH", {
       day: "numeric",
-      month: "long",
+      month: "short",
       year: "numeric",
     });
   } catch {
@@ -109,7 +110,8 @@ function buildReportHtml(
   .qr { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
   .qr img { width: 70px; height: 70px; }
   .qr span { font-size: 10px; color: #777; }
-  td:nth-child(4) { white-space: normal; }
+  /* ช่องครู: ไม่ตัดคำกลางชื่อ + ฟอนต์เล็กลงเล็กน้อยให้ชื่อยาวพอดี */
+  td:nth-child(3) { word-break: keep-all; line-height: 1.35; font-size: 13px; }
   .sign { margin-top: 48px; display: flex; justify-content: flex-end; }
   .sign .box { text-align: center; font-size: 14px; color: #333; }
   .sign .line { margin-bottom: 6px; }
@@ -136,11 +138,11 @@ function buildReportHtml(
   <table>
     <thead>
       <tr>
-        <th style="width:44px" class="c">ลำดับ</th>
+        <th style="width:40px" class="c">ลำดับ</th>
         <th>ชื่อ${type}</th>
-        <th style="width:160px">ครูผู้รับผิดชอบ</th>
-        <th style="width:96px" class="c">วันที่จัด</th>
-        <th style="width:92px" class="c">ไฟล์รายงาน</th>
+        <th style="width:190px">ครูผู้รับผิดชอบ</th>
+        <th style="width:82px" class="c">วันที่จัด</th>
+        <th style="width:88px" class="c">ไฟล์รายงาน</th>
       </tr>
     </thead>
     <tbody>
