@@ -122,6 +122,9 @@ function buildReportHtml(
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { border: 1px solid #cfcfcf; padding: 7px 9px; vertical-align: top; }
   th { background: ${accent}; color: #fff; font-weight: 600; text-align: left; }
+  /* พิมพ์หลายหน้า: หัวตารางซ้ำทุกหน้า, แถวไม่ถูกตัดครึ่งข้ามหน้า */
+  thead { display: table-header-group; }
+  tr { page-break-inside: avoid; }
   td.c { text-align: center; white-space: nowrap; }
   tbody tr:nth-child(even) { background: #f6f6f4; }
   .empty { color: #999; padding: 26px; }
@@ -131,7 +134,7 @@ function buildReportHtml(
   .qr span { font-size: 10px; color: #777; }
   /* ช่องครู: ไม่ตัดคำกลางชื่อ + ฟอนต์เล็กลงเล็กน้อยให้ชื่อยาวพอดี */
   td:nth-child(3) { word-break: keep-all; line-height: 1.35; font-size: 13px; }
-  .sign { margin-top: 90px; display: flex; justify-content: space-between; gap: 24px; }
+  .sign { margin-top: 90px; display: flex; justify-content: space-between; gap: 24px; page-break-inside: avoid; }
   .sign .box { text-align: center; font-size: 14px; color: #333; flex: 1; }
   .sign .line { margin-bottom: 6px; }
   .sign .role { margin-top: 2px; }
