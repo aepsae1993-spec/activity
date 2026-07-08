@@ -188,7 +188,7 @@ function buildReportHtml(
 export default function PdfExport({ activities }: { activities: Activity[] }) {
   const [month, setMonth] = useState<string>("all");
   const [reporter, setReporter] = useState<string>("");
-  const [director, setDirector] = useState<string>("");
+  const [director, setDirector] = useState<string>("นายณรงค์ เนตรลา");
   const [busy, setBusy] = useState<string | null>(null);
 
   async function handleExport(type: "กิจกรรม" | "อบรม") {
