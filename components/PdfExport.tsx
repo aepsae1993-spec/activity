@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import QRCode from "qrcode";
-import type { Activity } from "@/lib/supabaseClient";
+import { TEACHERS, type Activity } from "@/lib/supabaseClient";
 import { IconDoc } from "@/components/Icons";
 
 const SCHOOL_NAME = "โรงเรียนวัดบางขุด (อุ่นพิทยาคาร)";
@@ -50,7 +50,9 @@ function buildReportHtml(
   type: "กิจกรรม" | "อบรม",
   monthValue: string,
   rows: Activity[],
-  qrMap: Record<string, string>
+  qrMap: Record<string, string>,
+  reporter: string,
+  director: string
 ): string {
   const monthLabel =
     monthValue === "all"
@@ -112,9 +114,10 @@ function buildReportHtml(
   .qr span { font-size: 10px; color: #777; }
   /* ช่องครู: ไม่ตัดคำกลางชื่อ + ฟอนต์เล็กลงเล็กน้อยให้ชื่อยาวพอดี */
   td:nth-child(3) { word-break: keep-all; line-height: 1.35; font-size: 13px; }
-  .sign { margin-top: 48px; display: flex; justify-content: flex-end; }
-  .sign .box { text-align: center; font-size: 14px; color: #333; }
+  .sign { margin-top: 54px; display: flex; justify-content: space-between; gap: 24px; }
+  .sign .box { text-align: center; font-size: 14px; color: #333; flex: 1; }
   .sign .line { margin-bottom: 6px; }
+  .sign .role { margin-top: 2px; }
   .foot { margin-top: 10px; font-size: 12px; color: #888; text-align: right; }
   @media print { .noprint { display: none !important; } }
   .noprint { text-align:center; margin: 18px 0 4px; }
@@ -152,9 +155,18 @@ function buildReportHtml(
 
   <div class="sign">
     <div class="box">
-      <div class="line">ลงชื่อ ...............................................</div>
-      <div>( ............................................... )</div>
-      <div>ผู้รายงาน</div>
+      <div class="line">ลงชื่อ .........................................</div>
+      <div>( ${
+        reporter ? escapeHtml(reporter) : "........................................."
+      } )</div>
+      <div class="role">ผู้รายงาน</div>
+    </div>
+    <div class="box">
+      <div class="line">ลงชื่อ .........................................</div>
+      <div>( ${
+        director ? escapeHtml(director) : "........................................."
+      } )</div>
+      <div class="role">ผู้อำนวยการโรงเรียนวัดบางขุด (อุ่นพิทยาคาร)</div>
     </div>
   </div>
 
@@ -175,6 +187,8 @@ function buildReportHtml(
 
 export default function PdfExport({ activities }: { activities: Activity[] }) {
   const [month, setMonth] = useState<string>("all");
+  const [reporter, setReporter] = useState<string>("");
+  const [director, setDirector] = useState<string>("");
   const [busy, setBusy] = useState<string | null>(null);
 
   async function handleExport(type: "กิจกรรม" | "อบรม") {
@@ -206,7 +220,7 @@ export default function PdfExport({ activities }: { activities: Activity[] }) {
     );
     setBusy(null);
 
-    const html = buildReportHtml(type, month, rows, qrMap);
+    const html = buildReportHtml(type, month, rows, qrMap, reporter, director);
     const w = window.open("", "_blank");
     if (!w) {
       alert("กรุณาอนุญาต pop-up ของเว็บไซต์นี้ เพื่อเปิดหน้ารายงาน");
@@ -217,43 +231,70 @@ export default function PdfExport({ activities }: { activities: Activity[] }) {
     w.document.close();
   }
 
-  const selectCls =
-    "rounded-md border border-[var(--line)] bg-black/25 px-3.5 py-2.5 text-[var(--text)] outline-none transition focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] [color-scheme:dark]";
+  const fieldCls =
+    "w-full rounded-md border border-[var(--line)] bg-black/25 px-3.5 py-2.5 text-[var(--text)] outline-none transition placeholder:text-slate-500 focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] [color-scheme:dark]";
+  const labelCls =
+    "mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted)]";
+  const optStyle = { backgroundColor: "#111729", color: "#e9ebf2" };
 
   return (
     <div className="card rounded-lg p-6">
       <h3 className="font-semibold text-[var(--text)]">ส่งออกรายงาน (PDF)</h3>
       <div className="gold-rule mb-1 mt-2" />
       <p className="mb-4 text-sm text-[var(--muted)]">
-        เลือกเดือน แล้วดาวน์โหลดรายงานแยกตามประเภท (กิจกรรม / อบรม คนละไฟล์)
+        เลือกเดือน + ผู้ลงนาม แล้วดาวน์โหลดรายงานแยกตามประเภท (กิจกรรม / อบรม คนละไฟล์)
       </p>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      <div className="mb-4 grid gap-4 sm:grid-cols-3">
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
-            เลือกเดือน
-          </label>
+          <label className={labelCls}>เลือกเดือน</label>
           <select
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className={selectCls}
+            className={fieldCls}
           >
-            <option value="all" style={{ backgroundColor: "#111729", color: "#e9ebf2" }}>
+            <option value="all" style={optStyle}>
               ทั้งหมด (ทุกเดือน)
             </option>
             {THAI_MONTHS.map((m, i) => (
-              <option
-                key={m}
-                value={`${i + 1}`}
-                style={{ backgroundColor: "#111729", color: "#e9ebf2" }}
-              >
+              <option key={m} value={`${i + 1}`} style={optStyle}>
                 {m}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div>
+          <label className={labelCls}>ผู้รายงาน (ลงนามซ้าย)</label>
+          <select
+            value={reporter}
+            onChange={(e) => setReporter(e.target.value)}
+            className={fieldCls}
+          >
+            <option value="" style={optStyle}>
+              — เว้นว่างให้เซ็นเอง —
+            </option>
+            {TEACHERS.map((name) => (
+              <option key={name} value={name} style={optStyle}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className={labelCls}>ผอ. (ลงนามขวา)</label>
+          <input
+            type="text"
+            value={director}
+            onChange={(e) => setDirector(e.target.value)}
+            placeholder="เว้นว่างให้เซ็นเอง"
+            className={fieldCls}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-3">
           <button
             onClick={() => handleExport("กิจกรรม")}
             disabled={busy !== null}
@@ -272,6 +313,5 @@ export default function PdfExport({ activities }: { activities: Activity[] }) {
           </button>
         </div>
       </div>
-    </div>
   );
 }
